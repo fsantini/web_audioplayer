@@ -73,7 +73,7 @@ select {
         margin-bottom: 10px;
       }
 
-    #audioSelectDiv
+    .audioSelectDiv
     {
         display: flex;
         font-size: 20px;

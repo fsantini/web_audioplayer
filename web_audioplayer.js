@@ -1,12 +1,28 @@
-
 var currentSong = null;
 var currentPlayTimes = {};
+var currentTrackInBooks = {};
 var audioPlayer = null;
+var currentBook = null;
+var currentTrack = null;
 const base_url = 'audio/'
+
+function splitSong(song)
+{
+    const regex = /[0-9]+\.[^.]*$/;
+    const track = song.match(regex)[0];
+    const book = song.replace(track, '');
+    return [book, track];
+}
 
 function playSong(song)
 {
     console.log("Playing " + song);
+    const [book, track] = splitSong(song);
+    console.log("Book: " + book + ", Track: " + track);
+
+    currentTrackInBooks[book] = track;
+    localStorage.setItem('currentTrackInBooks', JSON.stringify(currentTrackInBooks));
+
     audioPlayer.src = base_url + song;
     if (song in currentPlayTimes) {
         audioPlayer.currentTime = currentPlayTimes[song];
@@ -15,7 +31,6 @@ function playSong(song)
     localStorage.setItem('currentSong', song);
     currentSong = song;
     audioPlayer.play();
-    // Update the localStorage with the current position every second
 }
 
 // Format the time in minutes and seconds
@@ -42,31 +57,74 @@ function audio_time_update()
 
 function set_song_in_combobox(song) 
 {
-    // Get the select element
-    $("#audioSelect").val(song);
+    var [book, track] = splitSong(song);
+    $("#audioSelectBook").val(book);
+    populate_combobox_track(book);
+    $("#audioSelectTrack").val(track);
 }
 
 
-function select_change()
+function select_change_book()
 {
-    var selectedSong = $("#audioSelect").val();
-    playSong(selectedSong);
+    var selectedBook = $("#audioSelectBook").val();
+    populate_combobox_track(selectedBook);
+    if (selectedBook in currentTrackInBooks)
+    {
+        const track = currentTrackInBooks[selectedBook];
+        $("#audioSelectTrack").val(track);
+        playSong(selectedBook + track);
+        return;
+    }
+    const track = $("#audioSelectTrack").val();
+    playSong(selectedBook + track);
 }
 
-function populate_combobox()
+function select_change_track()
+{
+    var selectedBook = $("#audioSelectBook").val();
+    var selectedTrack = $("#audioSelectTrack").val();
+    playSong(selectedBook + selectedTrack);
+}
+
+function populate_combobox_track(book)
 {
     // Get the select element
-    var select = $("#audioSelect");
+    var select = $("#audioSelectTrack");
     // Remove all the options
     select.empty();
     // Add an option for each song
     for (var i = 0; i < playlist.length; i++)
     {
-        var song = playlist[i];
-        var option = $("<option></option>");
-        option.attr("value", song);
-        option.text(song);
-        select.append(option);
+        var [book2, track] = splitSong(playlist[i]);
+        if (book2 == book)
+        {
+            var option = $("<option></option>");
+            option.attr("value", track);
+            option.text(track);
+            select.append(option);
+        }
+    }
+}
+
+function populate_combobox_books()
+{
+    // Get the select element
+    var select = $("#audioSelectBook");
+    // Remove all the options
+    select.empty();
+    // Add an option for each song
+    var addedBooks = []
+    for (var i = 0; i < playlist.length; i++)
+    {
+        var [book, track] = splitSong(playlist[i]);
+        if (!addedBooks.includes(book))
+        {
+            addedBooks.push(book);
+            var option = $("<option></option>");
+            option.attr("value", book);
+            option.text(book);
+            select.append(option);
+        }
     }
 }
 
@@ -148,7 +206,7 @@ function seek(event)
 }
 
 $(document).ready(function() {
-    populate_combobox();
+    populate_combobox_books();
     $("#pauseButton").hide();
 
     audioPlayer = $("#audioPlayer")[0];
@@ -156,6 +214,10 @@ $(document).ready(function() {
     let storedPlayTimes = localStorage.getItem('currentPositions');
     if (storedPlayTimes) {
         currentPlayTimes = JSON.parse(storedPlayTimes);
+    }
+    let storedTrackInBooks = localStorage.getItem('currentTrackInBooks');
+    if (storedTrackInBooks) {
+        currentTrackInBooks = JSON.parse(storedTrackInBooks);
     }
     // Restore the current position from localStorage, if available
     let currentSong = localStorage.getItem('currentSong');
@@ -169,7 +231,8 @@ $(document).ready(function() {
     {
         playSong(playlist[0]);
     }
-    $("#audioSelect").change(select_change);
+    $("#audioSelectBook").change(select_change_book);
+    $("#audioSelectTrack").change(select_change_track);
     $(audioPlayer)
         .on("ended", function() {
         currentPlayTimes[currentSong] = 0;

@@ -8,7 +8,7 @@
     window.onerror = function(e) {
         console.log(e.message);
         console.log('Probably PHP is not working');
-        playlist = ['Materassi01.mp3', 'Materassi02.mp3'];
+        playlist = ['Materassi01.mp3', 'Materassi02.mp3', 'Guida Galattica 01.mp3', 'Guida Galattica 02.mp3', 'Guida Galattica 03.mp3'];
     }
    </script>
    <script>
@@ -33,9 +33,14 @@
 </head>
 <body>
   <h1>Lorenzo's Audiobook Player</h1>
-  <div id="audioSelectDiv">
+  <div class="audioSelectDiv">
+  Libro:&nbsp; 
+    <select id="audioSelectBook">
+    </select>
+  </div>
+  <div class="audioSelectDiv">
   Traccia:&nbsp; 
-    <select id="audioSelect">
+    <select id="audioSelectTrack">
     </select>
   </div>
 
