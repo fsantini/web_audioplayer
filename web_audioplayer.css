@@ -1,0 +1,102 @@
+/* Default styles */
+#audioplayer {
+    width: 500px;
+    height: 50px;
+    background-color: #f2f2f2;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+  }
+  
+select {
+    width: 200px;
+    height: 30px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#credits
+{
+    position: absolute;
+    bottom: 0;
+}
+
+#controlsDiv
+{
+    width: 300px;
+    text-align: center;
+}
+
+#controlsDiv img {
+    width: 18%;
+    height: auto;
+    padding-top: 10px;
+}
+
+#controlsDiv img:hover {
+    cursor: pointer;
+}
+
+#progressBar {
+    position: relative;
+    width: 100%;
+    height: 1.2em;
+    border: 1px solid #3c8aff;
+}
+
+#progressBarFill {
+    height: 100%;
+    background-color: #3c8aff;
+}
+
+#timeDisplay {
+    position: absolute;
+    top: 0.1em;
+    width: 100%;
+    text-align: center;
+    cursor: default;
+    text-shadow: 0px 0px 10px white;
+}
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+
+
+    select {
+        flex: 1;
+        height: 50px;
+        font-size: 20px;
+        margin-bottom: 10px;
+      }
+
+    #audioSelectDiv
+    {
+        display: flex;
+        font-size: 20px;
+        width: 100%;
+        align-items: center;
+    }
+    #controlsDiv
+    {
+        width: 100%;
+        text-align: center;
+    }
+    #controlsDiv img {
+        width: 18%;
+        height: auto;
+    }
+
+    #progressBar {
+        height: 2.2em;
+    }
+
+    #timeDisplay {
+        top: 0.1em;
+        font-size: 1.8em;
+    }
+
+  }
